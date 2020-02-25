@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.TreeMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -411,23 +412,36 @@ public class FileManager {
 
     }
 
-    public ArrayList<File> getFiles(String path) {
-        File folder = new File(path);
-        ArrayList<File> listOfFilesToCopy = new ArrayList<File>();
-        if (folder != null) {
-            File[] listOfFiles = folder.listFiles();
-            if (listOfFiles != null && listOfFiles.length > 0) {
-                for (int i = 0; i < listOfFiles.length; i++) {
-                    if (listOfFiles[i].isFile()) {
-                        listOfFilesToCopy.add(listOfFiles[i]);
-                    }
-                }
-            } else {
-                System.out.println("WARNING: No files found in directory: " + path);
-            }
-        }
-        return listOfFilesToCopy;
-    }
+	public ArrayList<File> getFiles(String path) {
+		if (path == null)
+			return new ArrayList<>();
+
+		LinkedList<File> folders = new LinkedList<>();
+		folders.add(new File(path));
+
+		ArrayList<File> listOfFilesToCopy = new ArrayList<File>();
+
+		while (!folders.isEmpty()) {
+			File folder = folders.pollFirst();
+			if (folder != null) {
+				File[] listOfFiles = folder.listFiles();
+				if (listOfFiles != null && listOfFiles.length > 0) {
+					for (int i = 0; i < listOfFiles.length; i++) {
+						File file = listOfFiles[i];
+						if (file.isFile()) {
+							listOfFilesToCopy.add(file);
+						} else if (file.isDirectory()) {
+							folders.add(file);
+						}
+					}
+				} else {
+					System.out.println("WARNING: No files found in directory: " + path);
+				}
+			}
+		}
+
+		return listOfFilesToCopy;
+	}
 
     public void createDoc(TreeMap<String, ClassGroup> mapGroupNameToClassGroup, ArrayList<ClassModel> cModels,
             String projectDetail, String homeContents, String hostedSourceURL, IProgressMonitor monitor) {
