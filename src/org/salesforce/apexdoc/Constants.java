@@ -38,7 +38,7 @@ public class Constants {
         if (projectDetail != null && projectDetail.trim().length() > 0) {
             header = Constants.HEADER_OPEN + projectDetail;
         } else {
-            header = Constants.HEADER_OPEN + Constants.PROJECT_DETAIL + Constants.HEADER_CLOSE;
+            header = Constants.HEADER_OPEN + Constants.HEADER_CLOSE;
         }
         return header;
     }
